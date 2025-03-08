@@ -3,45 +3,42 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
-def predict_future_price(model_path, scaler, last_60_days, future_date):
+from tensorflow.keras.models import load_model
+import numpy as np
+import pandas as pd
+
+def  predict_future_prices(model_path, scaler, last_60_days, start_date, end_date):
     """
-    Predict stock price for a specific future date.
+    Predict stock prices for the selected date range using a rolling window approach.
     """
-    # Load the trained model
     model = load_model(model_path)
+    
+    start_date = pd.to_datetime(start_date)
+    end_date = pd.to_datetime(end_date)
+    current_date = pd.to_datetime(last_60_days.index[-1])
 
-    # Convert future date to datetime
-    future_date = pd.to_datetime(future_date)
-    current_date = pd.to_datetime(last_60_days.index[-1])  # Last date in historical data
-    days_ahead = (future_date - current_date).days  # Number of days to predict
+    if start_date <= current_date:
+        raise ValueError("Start date must be after the current date.")
+    if end_date <= start_date:
+        raise ValueError("End date must be after start date.")
 
-    if days_ahead < 1:
-        raise ValueError("Future date must be after the current date.")
+    total_days = (end_date - start_date).days
+    date_range = pd.date_range(start=start_date, periods=total_days, freq='D')
 
-    # Predict step-by-step until the future date
-    input_data = last_60_days[-60:].values.reshape(-1, 1)  # Ensure input_data is 2D
-    predictions = []
-    for _ in range(days_ahead):
-        # Reshape input_data to 2D before scaling
-        input_data_scaled = scaler.transform(input_data.reshape(-1, 1))
-        input_data_scaled = input_data_scaled.reshape(1, -1, 1)  # Reshape for LSTM input
-        predicted_price = model.predict(input_data_scaled)
-        predictions.append(predicted_price[0, 0])
-        # Update input_data with the predicted price
-        input_data = np.append(input_data[1:], predicted_price).reshape(-1, 1)  # Ensure 2D
+    # Prepare input data
+    input_data = last_60_days.values.reshape(-1, 1)
+    input_data_scaled = scaler.transform(input_data)
 
-    # Inverse transform the predictions to get actual prices
-    predictions = scaler.inverse_transform(np.array(predictions).reshape(-1, 1))
-    return predictions[-1][0]  # Return the price for the specific future date
+    # Use rolling predictions
+    predicted_prices = []
+    rolling_window = input_data_scaled[-60:].tolist()  # Convert to list for easy updating
 
-if __name__ == "__main__":
-    # Example usage
-    from data_loader import fetch_stock_data, preprocess_data
+    for _ in range(total_days):
+        input_array = np.array(rolling_window).reshape(1, 60, 1)  # Reshape for model input
+        predicted_scaled = model.predict(input_array)[0, 0]  # Predict next day
+        predicted_actual = scaler.inverse_transform([[predicted_scaled]])[0, 0]  # Convert back
+        predicted_prices.append(predicted_actual)
+        rolling_window.pop(0)  # Remove oldest entry
+        rolling_window.append([predicted_scaled])  # Append new predicted value
 
-    ticker = "AAPL"
-    future_date = "2024-01-15"  # Specific future date
-    stock_data = fetch_stock_data(ticker)
-    scaled_data, scaler = preprocess_data(stock_data)
-    last_60_days = stock_data['Close'][-60:]  # Last 60 days of historical data
-    predicted_price = predict_future_price("models/lstm_stock_model.h5", scaler, last_60_days, future_date)
-    print(f"Predicted price for {future_date}: ${predicted_price:.2f}")
+    return predicted_prices, date_range

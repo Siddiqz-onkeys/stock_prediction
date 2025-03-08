@@ -1,31 +1,43 @@
 import yfinance as yf
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 
+import yfinance as yf
+
 def fetch_stock_data(ticker):
-    """
-    Fetch historical stock data up to the current date.
-    """
-    stock_data = yf.download(ticker, period="max")  # Fetch all available data
-    return stock_data
+    ticker = ticker.upper()  # Ensure uppercase ticker
+    stock_data = yf.download(ticker, period="max", auto_adjust=False, progress=False)
+
+    #print(stock_data.head())  # Check the first few rows
+    #print(stock_data.columns)  # Print available columns
+
+    if stock_data.empty:
+        raise ValueError(f"No data found for ticker: {ticker}")
+
+    if 'Close' not in stock_data.columns:
+        raise KeyError(f"'Close' column is missing in fetched data for {ticker}. Columns found: {stock_data.columns}")
+
+    return stock_data[['Close']]
+
+
+
 
 def preprocess_data(stock_data):
     """
     Preprocess data for training.
     """
-    # Use 'Close' price for prediction
-    data = stock_data[['Close']].values
+    # Use 'Close' price for prediction and ensure it's a DataFrame
+    data = stock_data[['Close']].copy()  # Use copy to avoid SettingWithCopyWarning
 
     # Normalize data (scaling between 0 and 1)
     scaler = MinMaxScaler(feature_range=(0, 1))
-    scaled_data = scaler.fit_transform(data)
+    data['Close'] = scaler.fit_transform(data['Close'].values.reshape(-1, 1))  # Fit and transform on 'Close' column
 
-    return scaled_data, scaler
+    return data.values, scaler  # Return the DataFrame with scaled 'Close' prices
 
 if __name__ == "__main__":
     # Example usage
-    ticker = "AAPL"
+    ticker = "AMZN"
     stock_data = fetch_stock_data(ticker)
     scaled_data, scaler = preprocess_data(stock_data)
-    print(scaled_data[:5])
+    #print(scaled_data.head())

@@ -5,25 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Market Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Press+Start+2P&family=Rubik+Microbe&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>Stock Market Prediction</h1>
-        <form method="POST">
-            <label for="ticker">Stock Ticker:</label>
-            <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL" required>
-            <br>
-            <label for="future_date">Future Date:</label>
-            <input type="date" id="future_date" name="future_date" required>
-            <br>
-            <button type="submit">Predict</button>
-        </form>
-
-        {% if prediction %}
-        <div class="prediction">
-            <h2>{{ prediction }}</h2>
+    <div class="navbar">
+        <a href="{{ url_for('home')}}" style="text-decoration: none">
+            <header>STOFIXY</header>
+        </a>
+    
+        <div class="nav-buttons">
+            <a href="{{ url_for('home') }}">
+                <button>Home</button>
+            </a>
+            {% if not user_name %}
+            <a href="{{ url_for('welcome') }}">
+                <button>Login/Register</button>
+            </a>
+            {% else %}
+            <a href="{{ url_for('logout') }}">
+                <button>Logout</button>
+            </a>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
+    {% if message %}
+        <h3> {{ message }} </h3>
+    {% endif %}
+    <div class="container">
+
+        {% if user_saved_stocks %}
+            <div class="saved-stocks-container">
+                <button id="prevBtn">◄</button>
+                <div class="stocks-wrapper">
+                    <div class="stocks-list">
+                        {% for ticker, price in user_saved_stocks.items() %}
+                            <div class="stock-box">
+                                {{ ticker }} - ${{ price }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button id="nextBtn">►</button>
+            </div>
+        {% endif %}
+
+
+        <div class="input-form">
+            <form method="POST" action="/">
+
+                <div class="form-group">
+                    <label for="ticker">Stock Ticker:</label>
+                    <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="end_date">Future Date:</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="blank"></label>
+                    <button type="submit">Predict</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading Section (Hidden Initially) -->
+        <div class="graph">
+            <div id="loading" style="display: none; position: center;">
+                <div id="mediaContainer">
+                    <p>Hold tight, we're cooking up some predictions... 🔮📈</p>
+                    <video id="loadingVideo" width="200px" autoplay loop muted style="display:none">
+                        <source src="" type="video/mp4">
+                    </video>
+                </div>
+                
+            </div>
+
+            {% if stock_prediction %}
+            <div class="prediction">
+                <h2> Today's Price :{{ curr_day_price }}</h2>
+                <h2>{{ stock_prediction }}</h2>
+            </div>
+
+            <div class="plot">
+                {{ stock_plot_data|safe }}
+            </div>
+                {% if user_name %}
+                    <a href="{{ url_for('save_stock', ticker_name=selected_ticker,current_day_price=curr_day_price) }}">
+                        <button> Keep this in radar </button>
+                    </a>
+                {%  else %}
+                <a href="{{url_for('welcome')}}">
+                    <button> Keep this under radar </button>
+                </a>                
+                {% endif %}
+            {% endif %}
+        </div>        
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let form = document.querySelector("form");
+            let loadingDiv = document.getElementById("loading");
+            let loadingImg = document.getElementById("loadingImg");
+            let loadingVideo = document.getElementById("loadingVideo");
+            let videoSource = loadingVideo.querySelector("source");
+
+            let mediaFiles = [
+                { type: "video", src: "{{ url_for('static', filename='loading1.mp4') }}" },
+                { type: "video", src: "{{ url_for('static', filename='loading3.mp4') }}" },
+                { type: "video", src: "{{ url_for('static', filename='loading4.mp4') }}" }
+            ];
+
+            let index = 0;
+            let mediaInterval;
+
+            form.addEventListener("submit", function() {
+                loadingDiv.style.display = "block";  // Show the loading section
+                
+                function cycleMedia() {
+                    let currentMedia = mediaFiles[index % mediaFiles.length];
+                        videoSource.src = currentMedia.src;
+                        loadingVideo.load();
+                        loadingVideo.style.display = "block";
+                        loadingImg.style.display = "none";
+                    index++;
+                }
+
+                cycleMedia(); // Show first media immediately
+                mediaInterval = setInterval(cycleMedia, 3000); // Change every 3 seconds
+            });
+        });
+
+        //TO DISPLAY THE STOCKS
+        document.addEventListener("DOMContentLoaded", function () {
+        const stocksList = document.querySelector(".stocks-list");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        let scrollAmount = 0;
+        const scrollStep = 200;
+
+        nextBtn.addEventListener("click", function () {
+            scrollAmount += scrollStep;
+            stocksList.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+
+        prevBtn.addEventListener("click", function () {
+            scrollAmount = Math.max(0, scrollAmount - scrollStep);
+            stocksList.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+    });
+
+    </script>
 </body>
 </html>

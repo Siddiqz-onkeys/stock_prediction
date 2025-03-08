@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='first.css') }}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&display=swap">
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    </head>
+    <body>
+        <header>STOXIFY </header>
+        {% if message %}
+        <h1> {{message}}</h1>
+        {% endif %}
+        <!-- Container for the forms -->
+        <div class="form-container">
+            <!-- ### VERIFY MAIL ###-->
+            <form id="verify_email" action="/verify_mail" method="POST" class="forms" >
+                <label for="user_otp_in"> Enter OTP:</label>
+                <input type="text" name="user_code"></input>
+                <button type="submit">Verify</button>
+            </form>   
+
+        </div>
+    </body>
+
+</html>

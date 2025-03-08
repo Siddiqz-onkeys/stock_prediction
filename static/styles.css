@@ -1,56 +1,201 @@
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(15%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+
+/* Apply animation to all elements with a smooth delay */
+body, header, .form-container, .forms, button,input {
+    opacity: 0; /* Start invisible */
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+
+
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding:2%;
+    color: white;
     text-align: center;
+    font-family:'Limelight',cursive;
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), 
+                url('/static/bg_img.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-size:  20px;
 }
 
-h1 {
-    margin-bottom: 20px;
-}
-
-form {
+/* Flexbox for header and nav */
+.navbar {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between; /* Pushes header left and buttons right */
+    align-items: center;
+    width: 100%;
+    margin:15px;
+    top: 0;
+    left: 0;
+}
+
+/* Header styling - Left Corner */
+header {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Limelight', cursive;
+}
+
+/* Navigation buttons - Right Corner */
+.nav-buttons {
+    display: flex;
     gap: 10px;
 }
 
+.nav-buttons a {
+    text-decoration: none;
+}
+
+.nav-buttons button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 7px;
+    background-color: #af05f2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: 'Limelight', cursive;
+    transition: 0.3s ease-in-out;
+}
+
+.nav-buttons button:hover {
+    background: rgba(59, 4, 49, 0.892);
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+}
+
+
+.container {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-form form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
+    gap: 20px;
+    align-items: center; /* Align everything vertically */
+    width: 90%;
+    /* background: rgba(0, 0, 0, 0.5);  Transparent dark background */
+    padding: 154px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input */
+    align-items: center;
+    gap: 5px;
+}
+
 label {
+    font-size: 18px;
     font-weight: bold;
+    white-space: nowrap; /* Prevents text from wrapping */
 }
 
 input {
     padding: 8px;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 150px;
+    text-align: center;
 }
 
 button {
-    padding: 10px;
-    background: #007bff;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 7px;
+    background-color: #af05f2;
     color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
+    font-family: 'Limelight', cursive;
+    letter-spacing: 2px;
+    transition: 0.3s ease-in-out;
 }
 
 button:hover {
-    background: #0056b3;
+    background: rgba(59, 4, 49, 0.892);
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
 }
 
-.prediction {
-    margin-top: 20px;
-    font-size: 1.2em;
-    color: #333;
+
+.graph{
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    margin-left: 10%;
+}
+/* Fade-in animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.saved-stocks-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.stocks-wrapper {
+    overflow: hidden;
+    flex: 1;
+}
+
+.stocks-list {
+    display: flex;
+    justify-content: space-evenly; /* Distributes boxes across full width */
+    flex-wrap: wrap; /* Wraps to the next line if needed */
+    gap: 20px;
+    width: 100%;
+}
+
+.stock-box {
+    background-color: gold;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    flex: 1; /* Ensures all boxes take equal space */
+    text-align: center;
+    min-width: 100px; /* Prevents excessive shrinking */
+    max-width: 200px; /* Prevents too much expansion */
 }

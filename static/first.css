@@ -1,0 +1,113 @@
+/* Fade-in animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Apply animation to all elements with a smooth delay */
+body, header, .form-container, .forms, button {
+    opacity: 0; /* Start invisible */
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+/* Staggered delay for different elements */
+header {
+    animation-delay: 0.3s;
+}
+
+.form-container {
+    animation-delay: 0.6s;
+}
+
+.forms {
+    animation-delay: 0.9s;
+}
+
+button {
+    animation-delay: 1.2s;
+}
+
+
+body {
+    padding:2%;
+    color: white;
+    text-align: center;
+    font-family:'Limelight',cursive;
+    background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
+                url('/static/welcome_bg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+}
+
+header{    
+    font-size: 59.4px;
+    font-weight: 600;
+    padding: 1.2%;
+    letter-spacing:5px;
+}
+
+
+
+.form-container {
+    display: flex; /* Use Flexbox to align forms side by side */
+    justify-content: space-around; /* Add space between forms */
+    align-items: left; /* Align items vertically */
+    gap: 20px; /* Adds spacing between forms */
+    padding: 20px;
+}
+
+.forms {    
+    width: 45%; /* Each form takes up 45% of the container's width */
+    padding: 20px;
+    border-radius: 15px; /* Slightly more rounded corners for a softer look */
+    
+    /* Ultra-Glassy Gradient Background */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    
+    /* Strong Frosted Glass Effect */
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(18px) saturate(180%); /* Safari support */
+    
+    /* Inner glow for realistic glass reflection */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1), 
+                0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    /* Text Styling */
+    color: rgba(255, 255, 255, 0.9); /* Slightly transparent white for a frosty look */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Soft shadow for readability */
+    
+}
+
+/* Optional: Add hover effect for interactive glass effect */
+.forms:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.15));
+    box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.15), 
+                0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+
+
+button {
+    background-color: #af05f2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 7%;
+    font-family:'Press Start 2P';
+    letter-spacing:5px;
+}
+
+
+button:hover {
+    background: #0056b3;
+}
