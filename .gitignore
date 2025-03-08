@@ -1,0 +1,9 @@
+# Ignore virtual environments  
+stock_new_venv/  
+
+# Ignore Python cache  
+__pycache__/  
+*.pyc  
+
+# Ignore environment variables  
+.env  
