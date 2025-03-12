@@ -29,7 +29,7 @@ connection=mysql.connector.connect(
     database='stoxify-25',
     user='root',
     password='#plaSticr&25--',
-    connection_timeout=300
+    
 )
 
 
@@ -152,12 +152,10 @@ def check_username_exists(user_name):
 
 ###### FUNCTION TO GET THE USERS DSAVED STOCKS ###########
 def get_user_stocks():
-    print(session['user_id'])
+    #print(session['user_id'])
     cursor.execute("SELECT ticker_name,current_price FROM saved_stocks WheRE user_id=%s",(session['user_id'],))
     res=cursor.fetchall()
-    print(res)
-    cursor.close()
-    connection.close()
+    #print(res)
     if res:
         user_stocks={}
         for stock in res:
@@ -307,6 +305,15 @@ def save_stock(ticker_name,current_day_price):
         connection.commit()
         
         return render_template("index.html",user_saved_stocks=get_user_stocks(),user_name=session.get('user_name'),selected_ticker=ticker, stock_prediction=prediction, stock_plot_data=plot_data,curr_day_price=current_day_price,message="Stock's Now Under The Watch 🤓")
+
+########## DELETE A STOCK FROM THE SAVED STOCKS ########
+@app.route('/delete_stock/<string:ticker_name>',methods=["GET"])
+def delete_stock(ticker_name):
+    cursor.execute("DELETE FROM saved_stocks WHERE ticker_name=%s AND user_id=%s",(ticker_name,session['user_id']))
+    connection.commit()
+    return render_template("index.html",user_saved_stocks=get_user_stocks(),user_name=session.get('user_name'),selected_ticker=ticker, stock_prediction=prediction, stock_plot_data=plot_data,curr_day_price=current_day_price,message="Stock's out of the radar 🙌")
+
+
 
 ######### LOGOUT ########
 @app.route('/logout')

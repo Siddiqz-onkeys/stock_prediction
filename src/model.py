@@ -1,6 +1,7 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
+from tensorflow.keras.utils import plot_model  # Import this for visualization
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping
 
@@ -14,7 +15,7 @@ def create_lstm_model(input_shape):
     model.add(LSTM(units=50, return_sequences=False))
     model.add(Dropout(0.2))
     model.add(Dense(units=25))
-    model.add(Dense(units=1, activation='linear'))  # Added linear activation
+    model.add(Dense(units=1, activation='linear'))  # Linear activation for regression
     model.compile(optimizer='adam', loss='mean_squared_error')
     return model
 
@@ -54,4 +55,7 @@ if __name__ == "__main__":
     test_loss = model.evaluate(X_test, y_test)
     print(f"Test Loss: {test_loss}")
 
+    # Save the trained model
     model.save("models/updated_lstm_stock_model.h5")
+
+    

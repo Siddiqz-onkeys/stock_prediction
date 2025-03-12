@@ -3,10 +3,6 @@ from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
-from tensorflow.keras.models import load_model
-import numpy as np
-import pandas as pd
-
 def  predict_future_prices(model_path, scaler, last_60_days, start_date, end_date):
     """
     Predict stock prices for the selected date range using a rolling window approach.

@@ -189,13 +189,27 @@ button:hover {
 }
 
 .stock-box {
-    background-color: gold;
+    background: linear-gradient(135deg, #5a0573, #8a2be2); /* Deep neon purple gradient */
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: bold;
     text-transform: uppercase;
-    flex: 1; /* Ensures all boxes take equal space */
+    flex: 1;
     text-align: center;
-    min-width: 100px; /* Prevents excessive shrinking */
-    max-width: 200px; /* Prevents too much expansion */
+    min-width: 100px;
+    max-width: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.6); /* Subtle neon glow */
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
 }
+
+.stock-box:hover {
+    transform: translateY(2x);
+    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.8); /* Stronger glow on hover */
+}
+
+

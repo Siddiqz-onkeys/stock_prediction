@@ -6,6 +6,7 @@
     <title>Stock Market Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Press+Start+2P&family=Rubik+Microbe&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -42,6 +43,7 @@
                         {% for ticker, price in user_saved_stocks.items() %}
                             <div class="stock-box">
                                 {{ ticker }} - ${{ price }}
+                               <a href="{{url_for('delete_stock',ticker_name=ticker)}}" ><i class="fa fa-trash" style="cursor: pointer; color: red;"></i></a>
                             </div>
                         {% endfor %}
                     </div>
@@ -49,7 +51,6 @@
                 <button id="nextBtn">►</button>
             </div>
         {% endif %}
-
 
         <div class="input-form">
             <form method="POST" action="/">

@@ -1,5 +1,5 @@
 # Ignore virtual environments  
-stock_new_venv/  
+new_stock_venv/  
 
 # Ignore Python cache  
 __pycache__/  
