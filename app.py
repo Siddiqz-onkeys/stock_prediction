@@ -27,10 +27,10 @@ SCALER_PATH = "models/scaler.pkl"  # Path to save/load the scaler
 
 ##### Establishing a connection with database
 connection = mysql.connector.connect(
-    host='127.0.0.1',
-    database='stoxify_db',
+    host='stoxify-db.cj0osqme26sd.eu-north-1.rds.amazonaws.com',
+    database='Stoxify_new',
     user='root',
-    password='$9Gamb@098',
+    password='#Drive&2244',
 )
 
 app.config["SECRET_KEY"] = "a76001519deeea4dde21a83b5f773301d3088d62536c4a1412c8b9d4184c807e"  # Change this in production
@@ -119,7 +119,7 @@ def index():
             print("Predicting the future prices")
             predictions, date_range = predict_future_prices(MODEL_PATH, scaler, last_60_days, last_date, end_date)
 
-            print("generating the prices")
+            
             # Generate the plot
             plot_data = generate_plot(predictions, date_range)
 
@@ -243,7 +243,7 @@ def sign_in():
     else:
         return render_template('welcome.html', message="User Does Not Exist")
 
-def generate_plot(predictions, date_range):
+def generate_plot(predictions, date_range): 
     """
     Generate an interactive plot for the predicted prices over the selected date range.
     """
@@ -272,8 +272,8 @@ def generate_plot(predictions, date_range):
 
 ######### SAVE STOCK ######
 @app.route("/saved_stock/<string:ticker_name>/<float:current_day_price>", methods=["GET"])
-def save_stock(ticker_name, current_day_price):Ṇ
-    cursor.execute("SELECT EXISTS(SELECT 1 FROM saved_stocks WHERE ticker_name=%s)", (ticker_name,))
+def save_stock(ticker_name, current_day_price):
+    cursor.execute("SELECT EXISTS(SELECT 1 FROM saved_stocks WHERE ticker_name=%s and user_id=%s)", (ticker_name,session['user_id'],))
     if cursor.fetchone()[0] == 1:
         return render_template("index.html",stock_plot_data=plot_data, user_saved_stocks=get_user_stocks(), user_name=session.get('user_name'), selected_ticker=ticker, stock_prediction=prediction, curr_day_price=current_day_price, message="Stock Already Saved 😉")
     else:

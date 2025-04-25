@@ -41,7 +41,7 @@ def predict_future_prices(model_path, scaler, last_60_days, start_date, end_date
         predicted_scaled = model.predict(input_array)[0, 0]  # Single value
         
         # Inverse transform the Close price
-        dummy_array = np.zeros((1, 5))  # Match scaler's expected shape
+        dummy_array = np.zeros((1, 5))  # Match scaler's expected shape [(0,0,0,0,0),(0,0,,0,,,)]
         dummy_array[0, 3] = predicted_scaled  # Place at Close position (index 3)
         predicted_close_actual = scaler.inverse_transform(dummy_array)[0, 3]
         
@@ -53,4 +53,4 @@ def predict_future_prices(model_path, scaler, last_60_days, start_date, end_date
         rolling_window.pop(0)  # Remove oldest
         rolling_window.append(new_row)  # Add new prediction
 
-    return predicted_prices, date_range
+    return predicted_prices, date_range 
