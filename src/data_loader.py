@@ -3,37 +3,30 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 import yfinance as yf
+from datetime import datetime
+
+# Get the current date
+current_date = datetime.today().strftime('%Y-%m-%d')
 
 def fetch_stock_data(ticker):
     ticker = ticker.upper()  # Ensure uppercase ticker
-    stock_data = yf.download(ticker, period="max", auto_adjust=False, progress=False)
+    stock = yf.download(ticker, start="2021-01-01", end=current_date, auto_adjust=False)
 
-    #print(stock_data.head())  # Check the first few rows
-    #print(stock_data.columns)  # Print available columns
-
-    if stock_data.empty:
+    if stock.empty:
         raise ValueError(f"No data found for ticker: {ticker}")
 
-    if 'Close' not in stock_data.columns:
-        raise KeyError(f"'Close' column is missing in fetched data for {ticker}. Columns found: {stock_data.columns}")
+    if 'Close' not in stock.columns:
+        raise KeyError(f"'Close' column is missing in fetched data for {ticker}. Columns found: {stock.columns}")
 
-    return stock_data[['Close']]
-
-
-
+    stock.ffill(inplace=True)
+    return stock
 
 def preprocess_data(stock_data):
-    """
-    Preprocess data for training.
-    """
-    # Use 'Close' price for prediction and ensure it's a DataFrame
-    data = stock_data[['Close']].copy()  # Use copy to avoid SettingWithCopyWarning
+    scaler = MinMaxScaler(feature_range=(0, 1))  # Ensure correct range
+    scaled_data = scaler.fit_transform(stock_data[['Open', 'High', 'Low', 'Close', 'Volume']])
+    print(scaled_data)
+    return scaled_data, scaler
 
-    # Normalize data (scaling between 0 and 1)
-    scaler = MinMaxScaler(feature_range=(0, 1))
-    data['Close'] = scaler.fit_transform(data['Close'].values.reshape(-1, 1))  # Fit and transform on 'Close' column
-
-    return data.values, scaler  # Return the DataFrame with scaled 'Close' prices
 
 if __name__ == "__main__":
     # Example usage
